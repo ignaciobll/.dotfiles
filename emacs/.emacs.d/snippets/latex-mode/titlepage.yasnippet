@@ -1,0 +1,26 @@
+# -*- mode: snippet -*-
+# name: Latex Title Page
+# key: mtitle
+# group: latex
+# --
+
+\begin{titlepage}
+  \centering
+  \vspace*{0.0 cm}
+  \includegraphics[${3:width=0.3\textwidth}]{${2:./img/logo.png}}\\\\[1.0 cm]                 % Logo Universidad
+  \textsc{\LARGE Universidad Politécnica de Madrid}\\\\[2.0 cm]        % Nombre Universidad
+  \textsc{\Large $1} \\\\[0.5 cm]                           % Asignatura / Curso
+  \rule{\linewidth}{0.2 mm} \\\\ [0.4 cm]
+  { \huge \bfseries \thetitle}\\\\
+  \rule{\linewidth}{0.2 mm} \\\\[1.5 cm]
+
+  \begin{minipage}{\textwidth}
+    \begin{center} \large
+      \theauthor\\\\
+    \end{center}
+  \end{minipage}\\\\[2 cm]
+
+  {\large \date}\\\\[2 cm]
+
+  \vfill
+\end{titlepage}

@@ -310,9 +310,9 @@ mode "$displays" {
      bindsym Escape     mode "default"
      bindsym Return     mode "default"
 
-     bindsym w          exec "bash $HOME/.screenlayout/screen_home.sh", restart
-     bindsym b          exec "xrandr --output eDP1 --off --output DP1 --mode 1600x1200 --pos 1600x0 --rotate normal --output HDMI1 --off --output HDMI2 --mode 1600x1200 --pos 0x0 --rotate normal --output VIRTUAL1 --off", mode "default", restart
-     bindsym a          exec "xrandr --auto", restart
+     bindsym w          exec "xrandr --output eDP1 --off --output HDMI2 --primary --mode 2560x1080 --output HDMI1 --mode 1920x1080 --right-of HDMI2", mode "default", restart
+     bindsym b          exec "xrandr --output eDP1 --off --output HDMI2 --mode 1600x1200 --primary --output DP1 --mode 1600x1200 --right-of HDMI2", mode "default", restart
+     bindsym a          exec "xrandr --auto", mode "default", restart
 }
 
 
@@ -375,7 +375,7 @@ client.background       #FFFFFF
 bindsym $mod+p exec --no-startup-id "rofi -combi-modi drun,window,ssh -show combi -modi combi"
 # bindsym $mod+p exec "dmenu_run -nf '#BACACF' -nb '#074359' -sb '#1C6C8B' -sf '#FFFFFF' -fn 'DejaVuSans-10' -p 'dmenu'"
 bindsym $mod+shift+a exec "xrandr --auto", restart
-bindsym $mod+shift+w exec "bash $HOME/.screenlayout/screen_home.sh", restart
+bindsym $mod+shift+w exec "xrandr --output eDP1 --off --output HDMI2 --primary --mode 2560x1080 --output HDMI1 --mode 1920x1080 --right-of HDMI2", restart
 # bindsym $mod+shift+w exec "xrandr --newmode \\"2560x1080_60.00\\"  230.00  2560 2720 2992 3424  1080 1083 1093 1120 -hsync +vsync; xrandr --addmode HDMI1 \\"2560x1080_60.00\\";xrandr --output HDMI2 --mode 1920x1080 --pos 2560x0 --rotate normal --output HDMI1 --primary --mode 2560x1080_60.00 --pos 0x0 --rotate normal --output DP1 --off --output eDP1 --off --output VIRTUAL1 --off", restart #
 
 bindsym $mod+shift+Ctrl exec "setxkbmap es,us -option grp:alt_space_toggle -option ctrl:nocaps -option altwin:swap_alt_win"
