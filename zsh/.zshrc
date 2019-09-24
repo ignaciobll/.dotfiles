@@ -1,4 +1,5 @@
 # If you come from bash you might have to change your $PATH.
+ export PATH=~/.npm-global/bin:$PATH
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.cache/rebar3/bin:$PATH
@@ -7,8 +8,13 @@ export PATH=$HOME/.luna/bin:$PATH
 export PATH="$PATH:`yarn global bin`"
 export PATH=$HOME/git/harlan:$PATH
 export PATH=$HOME/git/harness/build:$PATH
+
+export NVM_DIR="$HOME/.nvm"
+
 export ZSH=/home/ignaciobll/.oh-my-zsh
 
+
+export MAUDE_LIB=/usr/share/maude
 
 export LD_LIBRARY_PATH=/home/ignaciobll/git/lift-copy/lib/Executor/build
 
