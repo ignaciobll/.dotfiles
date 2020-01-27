@@ -310,7 +310,7 @@ mode "$displays" {
      bindsym Escape     mode "default"
      bindsym Return     mode "default"
 
-     bindsym w          exec "xrandr --output eDP1 --off --output HDMI2 --primary --mode 2560x1080 --output HDMI1 --mode 1920x1080 --right-of HDMI2", mode "default", restart
+     bindsym w          exec "xrandr --output eDP1 --off --output HDMI2 --mode 2560x1080 --output HDMI1 --primary --mode 1920x1080 --right-of HDMI2", mode "default", restart
      bindsym b          exec "xrandr --output eDP1 --off --output HDMI2 --mode 1600x1200 --primary --output DP1 --mode 1600x1200 --right-of HDMI2", mode "default", restart
      bindsym a          exec "xrandr --auto", mode "default", restart
 }

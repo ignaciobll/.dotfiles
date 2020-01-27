@@ -4,6 +4,8 @@ height = 19
 radius =
 fixed-center = true
 
+monitor = ${env:MONITOR}
+
 background = #074359
 foreground = #DBE8F3
 
@@ -177,7 +179,7 @@ adapter = AC0
 
 ; If an inotify event haven't been reported in this many
 ; seconds, manually poll for new values.
-;
+
 ; Needed as a fallback for systems that don't report events
 ; on sysfs/procfs.
 ;

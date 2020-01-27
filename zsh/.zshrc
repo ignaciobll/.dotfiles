@@ -8,8 +8,7 @@ export PATH=$HOME/.luna/bin:$PATH
 export PATH="$PATH:`yarn global bin`"
 export PATH=$HOME/git/harlan:$PATH
 export PATH=$HOME/git/harness/build:$PATH
-
-export NVM_DIR="$HOME/.nvm"
+export PATH=$HOME/.cabal/bin:$PATH
 
 export ZSH=/home/ignaciobll/.oh-my-zsh
 
@@ -106,3 +105,10 @@ alias vim='emacsclient -nw -c -a ""'
 alias lth="ls -t | head"
 alias pipu="sudo pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 sudo pip install -U"
 alias hemacs='((emacs)&) && exit'
+alias ck='cookiecutter'
+hash -d t=~/.cookiecutter
+
+alias agdac='stack exec --package ieee754 --package text agda --'
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
