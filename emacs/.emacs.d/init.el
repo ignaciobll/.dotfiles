@@ -21,6 +21,9 @@
   (package-install 'use-package)
   )
 
+(setq load-path (cons "~/.local/bin" load-path))
+(setq exec-path (cons "~/.local/bin" exec-path))
+
 (setq make-backup-files nil) ;; Hello GIT
 
 (tooltip-mode -1)
@@ -49,36 +52,46 @@
 
 (setq-default truncate-lines nil)
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(use-package exec-path-from-shell
+  :ensure t
+  :init (exec-path-from-shell-initialize))
+
+;;; FONTS
+
+;; (require 'fira-code-mode)
 ;; (set-frame-font "Inconsolata-15")
 ;; (set-frame-font "Hack-13")
 (add-to-list 'default-frame-alist
-            '(font . "Hasklig Medium-13"))
-             ;; '(font . "Hack-13"))
+             '(font . "JetBrainsMono-13"))
+;; '(font . "Pragmata Pro-13"))
+;; '(font . "Hasklig Medium"))
+;; '(font . "Hack-13"))
+;; '(font . "Fira Code"))
 ;; (set-face-attribute 'default t :font "Hasklig Medium-13")
-(use-package hasklig-mode
- :ensure t
- :hook 'prog-mode-hook 'rainbow-mode)
 
-;; (use-package leuven-theme
-;;   :ensure t
-;;   :init ;(load-theme 'leuven t)
-;;   (load-theme 'darkokai t)
-;;   )
+;; (use-package hasklig-mode
+;;  :ensure t
+;;  :hook 'prog-mode-hook 'rainbow-mode)
 
-;; (use-package rebecca-theme
-;;   :ensure t
-;;   :init (load-theme 'rebecca t)
-;;   )
+(use-package pretty-mode
+  :ensure t
+  :init (global-pretty-mode 0)
+  )
 
-;; (use-package darkokai-theme
-;;   :ensure t
-;;   :init (load-theme 'darkokai t)
-;;   )
+;;; THEMES
 
-;; (use-package select-themes
-;;   :ensure t)
+(use-package doom-themes
+  :ensure t
+  ;; :init (load-theme 'doom-molokai t)
+  :init (load-theme 'doom-vibrant t)
+  )
 
-;; (load-theme 'doom-molokai)
+(use-package darkroom
+  :ensure t)
+
+;;; ORG MODE
 
 ;; Thanks Sacha Chua
 
@@ -87,11 +100,13 @@
 (global-set-key (kbd "C-c C-a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 
-(defvar (setq org-default-notes-file "~/base.org"))
+(defvar (setq org-default-notes-file "~/Documents/notes.org"))
 
-(defvar (setq org-agenda-files (list "~/base.org"
-                             "~/Documents/UPM/UPM.org"
-                             "~/Documents/General.org")))
+(defvar (setq org-agenda-files (list
+                                "~/Documents/notes.org"
+                                "~/Documents/MMMFF/agenda.org"
+                                "~/Documents/UPM/UPM.org"
+                                "~/Documents/General.org")))
 
 (defvar (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3)))))
 
@@ -103,41 +118,55 @@
             :ensure t)
   )
 
-;; (use-package spaceline
-;;   :ensure t
-;;   :config
-;;   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main))))
-;;   )
+(use-package ob-ipython
+  :ensure t)
 
-;; ;; (use-package spaceline-all-the-icons
-;; ;;   :after spaceline
-;; ;;   :init (spaceline-all-the-icons-theme))
+(use-package babel
+  :ensure t
+  :init
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((C . t) (shell . t) (python . t) (ipython . t) (haskell . t)))
+  (setq org-confirm-babel-evaluate nil)
+  )
+
+(add-to-list 'load-path
+             "~/.emacs.d/plugins/org-wiki")
+(require 'org-wiki)
+
+(setq org-wiki-location '"~/wiki")
+(global-set-key (kbd "C-c w") 'org-wiki-index)
 
 
-;; (use-package spaceline-config
-;;   :ensure spaceline
-;;   :config
-;;   (spaceline-emacs-theme)
-;;   )
-
-
-;; Spaceline
-
-;; (use-package spaceline-all-the-icons
-;;   :ensure t)
-;; (require 'spaceline-all-the-icons)
-;; (setq spaceline-all-the-icons-separator-type 'none)
-;; (spaceline-all-the-icons-theme)
-
+;;; TOOLS
+;; - Doom modeline
+;; - neotree
+;; - company
+;; - iwb
+;; - rainbow mode
+;; - rainbow delimiters
+;; - helm
+;; - ido
+;; - smex
+;; - multiple cursors
+;; - markdown mode
+;; - magit
+;; - multi term
+;; - yasnipet-snippets
+;; - yarnippet
+;; - flyckeck
+;; - projectile
+;; - yaml-mode
 
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
 (setq doom-modeline-height 25)
-;; (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
 (setq doom-modeline-buffer-file-name-style 'relative-from-project)
 (setq doom-modeline-icon t)
+
+;; (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
 
 (use-package neotree
   :ensure t
@@ -145,33 +174,9 @@
   :config (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   )
 
-;; (use-package pretty-mode
-;;   :ensure t
-;;   :init (global-pretty-mode t)
-;;   )
-
-(use-package doom-themes
+(use-package company
   :ensure t
-  :init (load-theme 'doom-molokai t)
-  )
-
-(use-package darkroom
-  :ensure t)
-
-;; (require 'company-mode)
-;; (add-hook 'after-init-hook 'global-company-mode)
-(global-company-mode)
-
-
-;; (global-nlinum-mode 1)
-;; (defun my-nlinum-mode-hook ()
-;;   (when nlinum-mode
-;;     (setq-local nlinum-format
-;;                 (concat "%" (number-to-string
-;;                              ;; Guesstimate number of buffer lines.
-;;                              (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
-;;                         "d"))))
-;; (add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
+  :init (global-company-mode))
 
 (setq-default indent-tabs-mode nil)
 
@@ -198,7 +203,16 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   )
 
-;; Voy a instalar el paquete ido
+(use-package helm
+  :ensure t
+  ;; :bind (("M-x" . 'helm-M-x)
+  ;;        ("C-x C-f" . 'helm-find-files)
+  ;;        ("C-x r b" . 'helm-filtered-bookmaks)
+  ;;        ("C-x C-d" . 'helm-find-files))
+  :init (setq helm-split-window-inside-p t)
+  :config (helm-autoresize-mode 1)
+  )
+
 (use-package ido
   :init
   (setq ido-enable-flex-matching t)
@@ -206,209 +220,12 @@
   (ido-mode 1)
   (setq ido-file-extensions-order '(".hs" ".org" ".tex" ".txt" ".py" ".json" ".config" ".xml" ".el" ".ini" ".cfg" ".cnf")))
 
-;; Voy a instalar el paquete ido-sort-mtime
 (use-package ido-sort-mtime
   :ensure t)
 
-;; Voy a instalar el paquete smex
 (use-package smex
   :ensure t
   :bind ("M-x" . smex))
-
-;; Voy a instalar el paquete yasnippet
-
-(add-to-list 'load-path
-              "~/.emacs.d/plugins/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
-
-(use-package yasnippet-snippets
-  :ensure t)
-
-
-(use-package aggressive-indent
-  :ensure t
-  ;; :init
-  ;; (add-hook 'prog-mode-hook #'aggressive-indent-mode)
-  )
-
-;; (use-package ac-math
-;;   :ensure t)
-
-;; (use-package auto-complete
-;;   :ensure t
-;;   :config
-;;   (add-to-list 'ac-modes 'latex-mode)
-;;   (defun my-ac-latex-mode () ; add ac-sources for latex
-;;    (setq ac-sources
-;;          (append '(ac-source-math-unicode
-;;            ac-source-math-latex
-;;            ac-source-latex-commands)
-;;                  ac-sources)))
-;;   (add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
-;;   ;; (setq ac-math-unicode-in-math-p t)
-;;   (ac-flyspell-workaround)
-;;   (ac-config-default)
-;; )
-
-(use-package haskell-mode
-  :ensure t
-  :mode "\\.hs\\'"
-  ;; :config
-  ;; (custom-set-variables
-  ;;  '(haskell-process-log t))
-  ;; (setq haskell-process-args-ghci
-  ;;       '("-ferror-spans" "-fshow-loaded-modules"))
-  ;; (setq haskell-process-args-cabal-repl
-  ;;       '("--ghc-options=-ferror-spans -fshow-loaded-modules"))
-  ;; (setq haskell-process-args-stack-ghci
-  ;;       '("--ghci-options=-ferror-spans -fshow-loaded-modules"
-  ;;         "--no-build" "--no-load"))
-  ;; (setq haskell-process-args-cabal-new-repl
-  ;;       '("--ghc-options=-ferror-spans -fshow-loaded-modules"))
-
-  ;; ;; haskell/haskell-mode Issue: 1553
-
-  ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc)
-  ;; ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-  ;; (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  ;; (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
-  ;; (eval-after-load 'haskell-mode
-  ;;   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
-  ;; (eval-after-load 'haskell-mode '(progn
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  ;;       			    (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
-  ;; (eval-after-load 'haskell-cabal '(progn
-  ;;       			     (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  ;;       			     (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  ;;       			     (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-  ;;       			     (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
-  )
-
-(use-package intero
-  :ensure t
-  :init (intero-global-mode))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(TeX-command-extra-options "-shell-escape")
- '(haskell-stylish-on-save t)
- '(package-selected-packages
-   (quote
-    (gdscript-mode company-tern emmet-mode web-mode graphviz-dot-mode dot-mode opencl-mode paredit dante hasklig-mode doom-modeline yasnippet-snippets yaml-mode xah-math-input use-package ttl-mode spaceline-all-the-icons smex select-themes restclient rainbow-mode rainbow-delimiters proof-general projectile ox-gfm ob-ipython neotree multiple-cursors multi-term meghanada markdown-mode magit json-mode intero ido-sort-mtime hindent helm groovy-mode floobits erlang ensime elpy elm-mode ein doom-themes darkroom darkokai-theme counsel company-reftex company-coq company-auctex basic-mode babel alchemist aggressive-indent))))
-
-;; (use-package dante
-;;   :ensure t
-;;   :after haskell-mode
-;;   :commands 'dante-mode
-;;   :init
-;;   (add-hook 'haskell-mode-hook 'dante-mode)
-
-;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
-;;   ;; OR:
-;;   ;; (add-hook 'haskell-mode-hook 'flymake-mode)
-;;   )
-
-(add-hook 'intero-mode-hook
-   '(lambda () (flycheck-add-next-checker 'intero
-                '(warning . haskell-hlint))))
-
-;; (use-package hindent
-;;   :ensure t
-;;   :init (add-hook 'haskell-mode-hook #'hindent-mode)
-;;   )
-
-;; (require 'haskell-process)
-
-;; ghc-mod
-;; (require 'ghc)
-;; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-
-;; haskell autocomplete
-;; (require 'company)
-;; (add-hook 'haskell-mode-hook 'company-mode)
-(add-to-list 'company-backends 'company-ghc)
-
-
-(use-package erlang
-  :ensure t
-  :mode "\\.erl\\'"
-  :config (erlang-mode)
-  )
-
-;; EQC Emacs Mode -- Configuration Start
-
-;; (add-to-list 'load-path "/usr/lib/erlang/lib/eqc-1.43.1/emacs/")
-;; ;; (autoload 'eqc-erlang-mode-hook "eqc-ext" "EQC Mode" t)
-;; (add-hook 'erlang-mode-hook 'eqc-erlang-mode-hook)
-;; (defvar (setq eqc-max-menu-length 30))
-;; (defvar (setq eqc-root-dir "/usr/lib/erlang/lib/eqc-1.43.1"))
-;; ;; EQC Emacs Mode -- Configuration End
-
-;; ;; Erlang Emacs Mode -- Configuration Start
-;; (setq erlang-root-dir "/usr/lib/erlang")
-;; (setq load-path (cons "/usr/lib/erlang/lib/tools-2.11.2/emacs" load-path))
-;; (setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
-;; (defvar (setq erlang-indent-leve 2))
-;; (require 'erlang-start)
-;; ;; Erlang Emacs Mode -- Configuration End
-(add-to-list 'load-path "~/.emacs.d/plugins/")
-(require 'eqc-mode)
-
-(use-package elixir-mode
-  :ensure t)
-
-(add-to-list 'load-path "~/.emacs.d/plugins/mix-format.el")
-(require 'elixir-format)
-(add-hook 'elixir-mode-hook
-          (lambda () (add-hook 'before-save-hook 'elixir-format-before-save)))
-
-(use-package alchemist
-  :ensure t)
-
-(use-package elpy
-  :ensure t
-  :mode "\\.py\\'"
-  ;; :init (elpy-enable)
-  ;; (shell-command "bash ~/.emacs.d/elpy.sh &")
-  :config
-  (python-mode)
-  (elpy-mode)
-  (setq elpy-rpc-python-command "python3")
-  (setq python-shell-interpreter "python3")
-  )
-
-
-
-(use-package ensime
-  :pin melpa-stable
-  :ensure t
-  :commands ensime ensime-mode
-  :init  (add-hook 'scala-mode-hook 'ensime-mode)
-  (setq
-   ensime-sbt-command "/usr/bin/sbt"
-   sbt:program-name "/usr/bin/sbt")
-  )
-
-(use-package elm-mode
-  :ensure t
-  )
-
-(use-package json-mode
-  :ensure t
-  :mode (("\\.json\\'". json-mode)("\\.jsch\\'" . json-mode))
-  :config (setq js-indent-level 2)
-  )
 
 (use-package multiple-cursors
   :ensure t
@@ -418,6 +235,113 @@
          ("C-c C-<" . mc/add-cursor-on-click))
   )
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)
+         ("C-x M-g" . magit-dispatch-popup))
+  )
+
+(use-package multi-term
+  :ensure t
+  :config (setq multi-term-program "/bin/zsh")
+  :bind (("M-s" . multi-term))
+  )
+
+(use-package yasnippet-snippets
+  :ensure t)
+
+;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+;; (require 'yasnippet)
+(use-package yasnippet
+  :ensure t)
+
+(yas-global-mode 1)
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
+
+
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode t)
+  :config
+  (add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+              (display-buffer-reuse-window
+               display-buffer-in-side-window)
+              (side            . bottom)
+              (reusable-frames . visible)
+              (window-height   . 0.33)))
+)
+
+(use-package projectile
+  :ensure t
+  :init  (add-hook 'prog-mode-hook 'projectile-mode))
+
+(use-package yaml-mode
+  :ensure t)
+
+;;; LANGS
+
+;; Haskell
+(use-package haskell-mode
+  :ensure t
+  :mode "\\.hs\\'"
+  )
+
+(use-package flycheck-haskell
+  :ensure t)
+
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+
+(add-hook 'haskell-mode-hook 'subword-mode)
+
+(use-package lsp-mode
+  :hook (haskell-mode . lsp)
+  :commands lsp
+  :config
+  (setq lsp-haskell-process-path-hie "ghcide") ;; Remove to have hie
+  (setq lsp-haskell-process-args-hie '())      ;;
+  )
+
+(use-package lsp-haskell
+  :ensure t)
+
+;; optionally
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :config
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  :bind ("C-c d" . lsp-ui-doc-hide)
+  :bind ("C-c i" . lsp-ui-imenu)
+)
+
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp)
+;; (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+(setq haskell-stylish-on-save t)
+(setq haskell-tags-on-save t)
+
+;; Agda
+(load-file (let ((coding-system-for-read 'utf-8))
+                (shell-command-to-string "agda-mode locate")))
+
+;; LaTeX
 (use-package company-auctex
   :ensure t)
 
@@ -448,6 +372,7 @@
   (add-hook 'LaTeX-mode-hook 'my-latex-mode-setup)
   (add-hook 'LaTeX-mode-hook 'reftex-mode)
   (setq reftex-plug-into-AUCTeX t)
+  '(TeX-command-extra-options "-shell-escape")
   )
 
 (setq-default ispell-program-name "aspell")
@@ -459,119 +384,93 @@
 ;; (use-package auto-fill-mode
 (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
 
-(use-package markdown-mode
-  :ensure t
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
-
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)
-         ("C-x M-g" . magit-dispatch-popup))
-  )
-
-(use-package multi-term
-  :ensure t
-  :config (setq multi-term-program "/bin/zsh")
-  :bind (("M-s" . multi-term))
-  )
-
-(use-package ob-ipython
-  :ensure t)
-
-
-
-(use-package babel
-  :ensure t
-  :init
-  (org-babel-do-load-languages
-   'org-babel-load-languages '(
-			       (C . t)
-			       (shell . t)
-			       (python . t)
-                               (ipython . t)
-                               (haskell . t)
-			       )
-   )
-  (setq org-confirm-babel-evaluate nil)
-
-  )
-
-(add-to-list 'load-path
-             "~/.emacs.d/plugins/org-wiki")
-(require 'org-wiki)
-
-(setq org-wiki-location '"~/wiki")
-(global-set-key (kbd "C-c w") 'org-wiki-index)
-
-;; (use-package meghanada
-;;   :ensure t
-;;   :init (add-hook 'java-mode-hook
-;;                   (lambda ()
-;;                     (meghanada-mode t)
-;;                     (flycheck-mode -1)
-;;                     (setq c-basic-offset 2)
-;;                     (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
-;;   (setq meghanada-java-path "java")
-;;   (setq meghanada-maven-path "mvn")
-;;   )
-
-
-;; (use-package helm
-;;   :ensure t
-;;   :bind (("M-x" . 'helm-M-x)
-;;          ("C-x C-f" . 'helm-find-files)
-;;          ("C-x r b" . 'helm-filtered-bookmaks)
-;;          ("C-x C-d" . 'helm-find-files))
-;;   :init (setq helm-split-window-inside-p t)
-;;   :config (helm-autoresize-mode 1)
-;;   )
-
-(use-package ivy
-  :ensure t)
-
 (use-package counsel
   :ensure t)
 
-(use-package flycheck
+
+;; Elixir
+(use-package elixir-mode
+  :ensure t)
+
+(add-to-list 'load-path "~/.emacs.d/plugins/lang/mix-format.el")
+(require 'elixir-format)
+
+(add-hook 'elixir-mode-hook
+          (lambda () (add-hook 'before-save-hook 'elixir-format-before-save)))
+
+(use-package alchemist
+  :ensure t)
+
+;; Erlang
+;; EQC Emacs Mode -- Configuration Start
+
+;; (add-to-list 'load-path "/usr/lib/erlang/lib/eqc-1.43.1/emacs/")
+;; ;; (autoload 'eqc-erlang-mode-hook "eqc-ext" "EQC Mode" t)
+;; (add-hook 'erlang-mode-hook 'eqc-erlang-mode-hook)
+;; (defvar (setq eqc-max-menu-length 30))
+;; (defvar (setq eqc-root-dir "/usr/lib/erlang/lib/eqc-1.43.1"))
+;; ;; EQC Emacs Mode -- Configuration End
+
+;; ;; Erlang Emacs Mode -- Configuration Start
+;; (setq erlang-root-dir "/usr/lib/erlang")
+;; (setq load-path (cons "/usr/lib/erlang/lib/tools-2.11.2/emacs" load-path))
+;; (setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
+;; (defvar (setq erlang-indent-leve 2))
+;; (require 'erlang-start)
+;; ;; Erlang Emacs Mode -- Configuration End
+;; (require 'eqc-mode)
+
+;; Formal Methods
+(use-package maude-mode
+  :ensure t)
+
+(use-package z3-mode
+  :ensure t)
+
+(use-package boogie-friends
   :ensure t
-  :init (global-flycheck-mode)
+  :init (setq flycheck-dafny-executable "/usr/bin/dafny")
+  )
+
+(use-package minizinc-mode
+  :ensure t
+  :mode ("\\.mzn\\'" . minizinc-mode)
+  )
+
+
+;; Python
+(use-package elpy
+  :ensure t
+  :mode "\\.py\\'"
+  ;; :init (elpy-enable)
+  ;; (shell-command "bash ~/.emacs.d/elpy.sh &")
   :config
-  (add-to-list 'display-buffer-alist
-             `(,(rx bos "*Flycheck errors*" eos)
-              (display-buffer-reuse-window
-               display-buffer-in-side-window)
-              (side            . bottom)
-              (reusable-frames . visible)
-              (window-height   . 0.33)))
-)
+  (python-mode)
+  (elpy-mode)
+  (setq elpy-rpc-python-command "python3")
+  (setq python-shell-interpreter "python3")
+  )
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(use-package projectile
+;; WEB
+(use-package elm-mode
   :ensure t
-  :init  (add-hook 'prog-mode-hook 'projectile-mode))
+  )
 
-(use-package groovy-mode
+(use-package json-mode
   :ensure t
-  :mode ("\\.gradle\\'" . groovy-mode))
-
-;; (use-package proof-general
-;;   :ensure t)
-
-;; (use-package company-coq
-;;   :ensure t)
-
-(use-package opencl-mode
-  :ensure t
-  :mode (("\\.cl\\'" . opencl-mode))
+  :mode (("\\.json\\'". json-mode)("\\.jsch\\'" . json-mode))
+  :config (setq js-indent-level 2)
   )
 
 (use-package web-mode
   :ensure t
+  :mode (("\\.jsx\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode))
+  :hook (web-mode . (lambda ()
+                      (when (string-equal "tsx" (file-name-extension buffer-file-name))
+                        (setup-tide-mode))))
+  :config (flycheck-add-mode 'javascript-eslint 'web-mode)
   )
 
 (use-package js2-mode
@@ -598,16 +497,72 @@
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save)))
+         (before-save . tide-format-before-save))
+  :config  (setq tide-format-options
+                '(:tabSize 2
+                  :indentSize 2
+                  :baseIndentSize 0
+                  :convertTabsToSpaces true
+                  :insertSpaceAfterCommaDelimiter true
+                  :insertSpaceAfterSemicolonInForStatements true
+                  :insertSpaceBeforeAndAfterBinaryOperators true
+                  :insertSpaceAfterKeywordsInControlFlowStatements true
+                  :insertSpaceAfterFunctionKeywordForAnonymousFunctions true
+                  ;; :insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis false
+                  ;; :insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets false
+                  ;; :insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces false
+                  ;; :insertSpaceBeforeFunctionParenthesis false
+                  ;; :placeOpenBraceOnNewLineForFunctions false
+                  ;; :placeOpenBraceOnNewLineForControlBlocks false
+                  ))
+  )
 
-;; MMMFF
+(setq js-indent-level 2)
+(setq tab-width 2)
 
-(use-package maude-mode
-  :ensure t)
+;; (use-package prettier-js
+;;   :ensure t
+;;   :hook (typescript-mode . prettier-js-mode)
+;;   :config ((setq prettier-js-args
+;;                  '(
+;;                    "--trailing-comma" "none"
+;;                    "--bracket-spacing" "true"
+;;                    "--single-quote" "true"
+;;                    "--no-semi" "true"
+;;                    "--jsx-single-quote" "true"
+;;                    "--jsx-bracket-same-line" "true"
+;;                    "--print-width" "100"))
+;;            )
+;;   )
+
+
+;; Other
+
+(setq flymake-run-in-place nil)
+(setq temporary-file-directory "~/.emacs.d/tmp/")
+
+(defun reopen-this-file-as-sudo ()
+  "Reopens this file as sudo."
+  (interactive)
+  (defvar file-name
+  (when-let ((file-name (buffer-file-name)))
+    (find-alternate-file (concat "/sudo::" file-name)))))
 
 (provide 'init)
 
-;;; init.el ends here
+;; (custom-set-variables
+;; '(TeX-command-extra-options "-shell-escape")
+;; '(flymake-proc-ignored-file-name-regexps '(".*"))
+;; '(flymake-start-on-flymake-mode nil)
+;; '(flymake-start-on-save-buffer nil)
+;; )
+
+(custom-set-variables
+ '(TeX-command-extra-options "-shell-escape")
+ '(flymake-proc-ignored-file-name-regexps '(".*"))
+ '(flymake-start-on-flymake-mode nil)
+ '(flymake-start-on-save-buffer nil)
+ )
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -615,3 +570,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;;

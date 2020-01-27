@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Include graphics
+# key: img
+# --
+\\includegraphics[width=\\textwidth]{./img/$1}$0

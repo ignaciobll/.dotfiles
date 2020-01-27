@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Lambda Notation Def
+# key: lamdef
+# --
+\\DeclareSymbolFont{myletters}{OML}{ztmcm}{m}{it}
+\\DeclareMathSymbol{\\uplambda}{\\mathord}{myletters}{"15}
+
+\\def\\lam #1 #2 {\$\\uplambda #1.#2\$}

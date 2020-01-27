@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Tikz edge
+# key: edge
+# --
+($1) edge              node              {\$$2\$}   ($3)

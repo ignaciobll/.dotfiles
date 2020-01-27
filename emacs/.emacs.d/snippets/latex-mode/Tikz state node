@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Tikz state node
+# key: state
+# --
+\\node[state] (${1:q}) [$2]   {\$${3}\$};
+$0

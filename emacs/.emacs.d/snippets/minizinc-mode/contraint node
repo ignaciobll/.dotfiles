@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: contraint node
+# key: n
+# --
+constraint $1 != $2;
+$0
